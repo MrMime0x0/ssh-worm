@@ -1,0 +1,11 @@
+ip = params[0]
+
+meta = include_lib("/lib/metaxploit.so")
+eta = meta.net_use(ip, 22)
+ta = eta.dump_lib
+tea = ta.overflow("[REDACTED]", "[REDACTED]")
+get = tea.launch("/bin/apt-get", "addrepo [REDACTED]")
+et = tea.launch("/bin/apt-get", "update")
+twa = tea.launch("/bin/apt-get", "install routerroot")
+uio = tea.launch("/bin/apt-get", "install metaxploit.so")
+io = tea.launch("/bin/routerroot", "")
