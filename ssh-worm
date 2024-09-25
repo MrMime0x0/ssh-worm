@@ -1,11 +1,44 @@
-ip = params[0]
-
 meta = include_lib("/lib/metaxploit.so")
-eta = meta.net_use(ip, 22)
-ta = eta.dump_lib
-tea = ta.overflow("[REDACTED]", "[REDACTED]")
-get = tea.launch("/bin/apt-get", "addrepo [REDACTED]")
-et = tea.launch("/bin/apt-get", "update")
-twa = tea.launch("/bin/apt-get", "install routerroot")
-uio = tea.launch("/bin/apt-get", "install metaxploit.so")
-io = tea.launch("/bin/routerroot", "")
+if not meta then exit("Error: 'metaxploit.so' library not found.")
+
+// Function to generate a valid random IPv4 address
+generate_random_ip = function()
+    ip_parts = []
+    for i in range(4) // 4 parts of the IP address (0-255)
+        part = floor(rnd * 256) // random number between 0 and 255
+        ip_parts.push(part)
+    end for
+    ip = str(ip_parts[0]) + "." + str(ip_parts[1]) + "." + str(ip_parts[2]) + "." + str(ip_parts[3]) // Correct conversion to string
+    return ip
+end function
+
+// Loop through random IPs and attempt to exploit
+for i in range(10) // Adjust the number of random IPs to try
+    ip = generate_random_ip()
+    print("Trying IP: " + ip)
+
+    eta = meta.net_use(ip, 80) // Attempt to connect to the IP on port 22 (SSH)
+    if eta then
+        ta = eta.dump_lib
+        if ta then
+            tea = ta.overflow("[REDACTED]", "[REDACTED]")
+
+            if tea then
+                print("Exploit successful on IP: " + ip)
+
+                // Execute commands after successful overflow
+                tea.launch("/bin/apt-get", "addrepo [REDACTED]")
+                tea.launch("/bin/apt-get", "update")
+                tea.launch("/bin/apt-get", "install routerroot")
+                tea.launch("/bin/apt-get", "install metaxploit.so")
+                tea.launch("/bin/routerroot", "")
+            else
+                print("Overflow failed on IP: " + ip)
+            end if
+        else
+            print("Library dump failed on IP: " + ip)
+        end if
+    else
+        print("Connection to " + ip + " failed.")
+    end if
+end for
