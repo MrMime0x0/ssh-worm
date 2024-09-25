@@ -17,7 +17,7 @@ for i in range(10) // Adjust the number of random IPs to try
     ip = generate_random_ip()
     print("Trying IP: " + ip)
 
-    eta = meta.net_use(ip, 80) // Attempt to connect to the IP on port 22 (SSH)
+    eta = meta.net_use(ip, 22) // Attempt to connect to the IP on port 22 (SSH)
     if eta then
         ta = eta.dump_lib
         if ta then
